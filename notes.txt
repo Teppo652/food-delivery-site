@@ -1,0 +1,677 @@
+pizza online killer
+https://yle.fi/uutiset/3-10839203
+
+Note: food is delivered by restaurants own personnell!
+
+card grid malli:
+eat...src\components\Listing2.vue
+----------------
+pages:
+index
+Anna osoite (google street filler)
+o Kuljetus
+o Nouto
+Tarkka sijainti (kartalla)
+
+Listing:
+listingImg
+imgTags  Free drink, Free delivery(deliveryPrice)
+deliveryTime  55 min
+name Pizza Benitto
+avgStars * 4.2/5 (279)
+totVotes
+priceLevel €€€
+foodTypes Vegetarian, falafel, pizza, kebab...
+minPurchase €14.00 minimum, No minimum
+deliveryPrice €3.90 delivery fee, FREE
+bonus 15% bonus
+
+Details page:
+img
+name LEON Pizzeria
+avgStars * 4.2/5 (279)
+totVotes
+bonus 15% bonus
+priceLevel €€€
+foodTypes Vegetarian, falafel, pizza, kebab...
+openingHours Open 10:00 - 22:30
+
+
+registerRestaurant  /  settings (restaurant info)
+
+menu settings 
+Groups
+Add group ____________ or droplist save
+Meals
+Add meal: __name___  price droplist save
+variations: 
+  x use earlier droplist save
+  x use in all in this group
+ Add variation: __name___  price droplist save
+Meal ingredients:
+Your earlier used ingedients:
+x qwerty     x qwerty     x qwerty     x qwerty
+x qwerty     x qwerty     x qwerty     x qwerty
+x qwerty     x qwerty     x qwerty     x qwerty
+x qwerty     x qwerty     x qwerty     x qwerty
+x qwerty     x qwerty     x qwerty     x qwerty
+Commonly used ingedients:
+
+
+Add ingedient not on list
+   ____________ save
+
+
+
+Extra ingedients
+  x use all ingredients in all meals in this group
+
+Set prices
+-----------
+NEW PAGES:
+Restaurants page 
+ ordered items
+ order time
+ promised delivery deadline
+ payment info
+
+Deliverypersons page: MOBILE!
+ customer info: name, phone, address 
+ payment info
+ ordered items
+ order time
+ promised delivery deadline
+ update order status buttons
+
+restaurantReports
+month,totOrders,totSales,totOrderingsystemExpenses
+
+------------------------------------------------------
+STATE
+
+1. user register or login
+2. registerRestaurant
+3. menu
+4. orders
+
+registerRestaurant
+menu
+orders
+login
+register
+
+
+
+
+
+
+------------------------------------------------------
+DB
+
+users:
+name VARCHAR(50)
+email VARCHAR(50)
+phone  VARCHAR(25)
+password VARCHAR(50)
+address VARCHAR(50)
+coordsXY VARCHAR(50)
+city VARCHAR(50)
+doorCode VARCHAR(25) 
+joinedDate INT
+totOrders INT
+defaultRestaurantIds  VARCHAR(25)
+
+NEW TABLE:
+restaurantIdsByArea 
+areaId
+restaurantId  
+
+NEW TABLE:
+employees:
+restaurantId
+userId
+isRestaurantAdmin
+isDeliveryPerson
+
+
+cashUsers:
+restaurantId
+userId
+
+meals:
+restaurantId
+groupId
+name VARCHAR(50) 
+descriptionText  VARCHAR(255) 
+ingredientIds 0,1,2,3,4
+  esim: Americano
+price INT
+
+mealVariations:
+mealId
+name VARCHAR(50) 
+priceAdd INT
+  esim: Norm. + €9.60,  Pannu + €14.50,  Perhe + €16.50
+
+ingredientsToMeals:
+mealId
+ingredientId
+priceIfextra INT  (optional täytteet kohdassa näkyy)
+orderId   (optional täytteet kohdassa näkyy)
+
+ingredientNames:  
+id
+restaurantId (only used when an ingedient not on list was added)
+langId 
+name VARCHAR(25) 
+  esim: Kana, Pekoni, Mozzarella, Punasipuli, Smetana, Raikas salaatti
+
+mealGroups:
+langId
+name  VARCHAR(50) 
+  esim: KALARUOAT, JUOMAT
+
+orders:
+userId
+estimatedDeliveryTime
+isDelivery BOOL (True=delivery,False=pickup)
+deliveryDateTime INT
+message VARCHAR(255) 
+doorCode VARCHAR(25) 
+phone  VARCHAR(25)
+totalSum
+paymentType
+isPaid
+POIS: isDeliveredOrPickedUp BOOL
+NEW FIELDS:
+orderedDateTime
+restaurantRespondedDateTime
+deliveryPersonId
+deliveryStartDateTime
+deliveryEndDateTime
+orderStatusId (0=ordered,1=restaurantResponded,2=deliveryStarted,3=delivered,4=unableToFindAddress,5=unableToAccessCustomer,6=triedToReachCustomer,7=customerRejectedMeal,8==customerRejectedMealDueFault,9=customerCannotPay,10=vehicleBreakdown,11=OtherForceMajeure,12=notDelivered)
+
+orderItems:
+orderId
+mealId
+variationId
+price INT
+
+
+restaurants:
+country TINYINT
+area 1 INT
+area 2
+area 3
+area 4
+area 5
+coordsXY
+address   VARCHAR(50)   Hollantilaisentie 32, 00330 Helsinki
+phone VARCHAR(25) 
+listingImg VARCHAR(8) 
+outsideImg VARCHAR(8) 
+imgTagIds VARCHAR(25)
+deliveryTime
+name VARCHAR(50) 
+avgStarsTINYINT
+totVotes INT
+priceLevel TINYINT - determined automatically from pricelist!!!
+foodTypeIds VARCHAR(50) 3,2,  Vegetarian, falafel, pizza, kebab
+minPurchase INT
+deliveryPrice INT
+bonus TINYINT
+openingHoursString  VARCHAR(255) 
+  Esim: Mon - Thu 10:00 - 21:30, 10:00 - 22:00 Fri 10:00 - 22:30, 10:00 - 23:00 Sat 11:00 - 22:30, 11:00 - 23:00 Sun 11:00 - 21:30, 11:00 - 22:00 (construced when restaurant settings saved)
+mapCoords  VARCHAR(50) 
+paymentTime TINYINT   Etukäteen,Noutaessa
+paymentTypeIds VARCHAR(255) Mobile pay,Swish,SMS
+
+pizza_businessHours
+resaurantId
+weekdayIdOrDate
+openHour
+closeHour
+
+
+imgTags
+lang
+name   VARCHAR(25) vegetarian,
+
+foodTypes: Vegetarian, falafel, pizza, kebab...
+foodTypeId
+langId
+name  VARCHAR(25)
+orderId
+
+reviews:
+restaurantId
+date  INT
+reviewText VARCHAR(255)
+stars  TINYINT
+===========================
+DB creation:
+
+ Windows in menu File → Preferences → User Settings
+
+
+pizza_users
+-name
+-email
+-phone
+-password
+-address
+coordsXY
+-city
+doorCode 
+joinedDate
+totOrders
+defaultRestaurantIds
+
+ tables[a] = "pizza_users:name,email,phone,password,address,coordsXY,city,doorCode,joinedDate,totOrders,defaultRestaurantIds:VARCHAR(50),VARCHAR(50),VARCHAR(20),VARCHAR(50),VARCHAR(50),VARCHAR(50),VARCHAR(50),VARCHAR(20),INT,INT,VARCHAR(50):input,input,input,input,input,input,input,input,input,input,input:Name,Email,Phone,Password,Address,Coords x y,City,Door code,Joined date,Tot orders,Default restaurant ids:Name,Email,Phone,Password,Address,Coords x y,City,Door code,Joined date,Tot orders,Default restaurant ids"; a++; 
+
+pizza_cashUsers
+restaurantId
+userId
+
+ tables[a] = "pizza_cashUsers:restaurantId,userId:INT,INT:input,input:Restaurant id,User id:Restaurant id,User id"; a++; 
+
+pizza_meals
+restaurantId
+groupId
+name 
+descriptionText   
+ingredientIds
+price
+
+ tables[a] = "pizza_meals:restaurantId,groupId,name,descriptionText,ingredientIds,price:INT,TINYINT UNSIGNED,VARCHAR(50),VARCHAR(100),VARCHAR(100),INT:input,input,input,input,input,input:Restaurant id,Group id,Name,Description text,Ingredient ids,Price:Restaurant id,Group id,Name,Description text,Ingredient ids,Price"; a++; 
+
+
+pizza_mealVariations
+mealId
+name 
+priceAdd
+
+ tables[a] = "pizza_mealVariations:mealId,name,priceAdd:INT,VARCHAR(50),INT:input,input,input:Meal id,Name,Price add:Meal id,Name,Price add"; a++; 
+
+pizza_ingredientsToMeals
+mealId
+ingredientId
+priceIfextra 
+orderId
+
+ tables[a] = "pizza_ingredientsToMeals:mealId,ingredientId,priceIfextra,orderId:INT,INT,INT,TINYINT UNSIGNED:input,input,input,input:Meal id,Ingredient id,Price ifextra,Order id:Meal id,Ingredient id,Price ifextra,Order id"; a++; 
+
+pizza_ingredientNames  
+restaurantId 
+langId 
+name 
+
+ tables[a] = "pizza_ingredientNames:restaurantId,langId,name:INT,TINYINT UNSIGNED,VARCHAR(50):input,input,input:Restaurant id,Lang id,Name:Restaurant id,Lang id,Name"; a++; 
+
+pizza_mealGroups
+langId
+name  
+
+ tables[a] = "pizza_mealGroups:langId,name:INT,VARCHAR(50):input,input:Lang id,Name:Lang id,Name"; a++; 
+
+
+pizza_orders
+userId
+isDelivery
+askedDeliveryDateTime
+estimatedDeliveryTime
+message
+doorCode
+phone
+totalSum
+paymentType
+isPaid
+isDeliveredOrPickedUp
+
+tables[a] = "pizza_orders:userId,isDelivery,askedDeliveryDateTime,estimatedDeliveryTime,message,doorCode,phone,totalSum,paymentType,isPaid,isDeliveredOrPickedUp:INT,BOOLEAN,INT,INT,VARCHAR(100),VARCHAR(20),VARCHAR(20),INT,INT,BOOLEAN,BOOLEAN:input,input,input,input,input,input,input,input,input,input,input:User id,Is delivery,Asked delivery date time,Estimated delivery time,Message,Door code,Phone,Total sum,Payment type,Is paid,Is delivered or picked up:User id,Is delivery,Asked delivery date time,Estimated delivery time,Message,Door code,Phone,Total sum,Payment type,Is paid,Is delivered or picked up"; a++; 
+
+pizza_orderItems
+orderId
+mealId
+variationId
+price
+
+ tables[a] = "pizza_orderItems:orderId,mealId,variationId,price:INT,INT,INT,INT:input,input,input,input:Order id,Meal id,Variation id,Price:Order id,Meal id,Variation id,Price"; a++; 
+
+pizza_restaurants
+country
+area1
+area2
+area3
+area4
+area5
+coordsXY
+address 
+phone 
+listingImg
+outsideImg
+imgTagIds
+deliveryTime
+name 
+avgStars
+totVotes
+priceLevel
+foodTypeIds
+minPurchase
+deliveryPrice
+bonus
+openingHoursString    
+mapCoords  
+paymentTime 
+paymentTypeIds
+
+ tables[a] = "pizza_restaurants:country,area1,area2,area3,area4,area5,coordsXY,address,phone,listingImg,outsideImg,imgTagIds,deliveryTime,name,avgStars,totVotes,priceLevel,foodTypeIds,minPurchase,deliveryPrice,bonus,openingHoursString,mapCoords,paymentTime,paymentTypeIds:TINYINT UNSIGNED,INT,INT,INT,INT,INT,VARCHAR(50),VARCHAR(50),VARCHAR(20),CHAR(8),CHAR(8),VARCHAR(50),INT,VARCHAR(50),TINYINT UNSIGNED,INT,TINYINT UNSIGNED,VARCHAR(50),INT,INT,TINYINT UNSIGNED,VARCHAR(100),VARCHAR(50),TINYINT UNSIGNED,VARCHAR(100):input,input,input,input,input,input,input,input,input,input,input,input,input,input,input,input,input,input,input,input,input,input,input,input,input:Country,Area1,Area2,Area3,Area4,Area5,Coords x y,Address,Phone,Listing img,Outside img,Img tag ids,Delivery time,Name,Avg stars,Tot votes,Price level,Food type ids,Min purchase,Delivery price,Bonus,Opening hours string,Map coords,Payment time,Payment type ids:Country,Area1,Area2,Area3,Area4,Area5,Coords x y,Address,Phone,Listing img,Outside img,Img tag ids,Delivery time,Name,Avg stars,Tot votes,Price level,Food type ids,Min purchase,Delivery price,Bonus,Opening hours string,Map coords,Payment time,Payment type ids"; a++; 
+
+
+pizza_businessHours
+resaurantId
+weekdayIdOrDate
+openHour
+closeHour
+
+ tables[a] = "pizza_businessHours:resaurantId,weekdayIdOrDate,openHour,closeHour:INT,INT,INT,INT:input,input,input,input:Resaurant id,Weekday id or date,Open hour,Close hour:Resaurant id,Weekday id or date,Open hour,Close hour"; a++; 
+
+pizza_imgTags
+lang
+name
+orderId
+
+ tables[a] = "pizza_imgTags:lang,name,orderId:TINYINT UNSIGNED,VARCHAR(15),INT:input,input,input:Lang,Name,Order id:Lang,Name,Order id"; a++; 
+
+pizza_foodTypes
+foodTypeId
+langId
+name
+orderId
+
+ tables[a] = "pizza_foodTypes:foodTypeId,langId,name,orderId:INT,INT,VARCHAR(50),TINYINT UNSIGNED:input,input,input,input:Parent id,Lang id,Name,Order id:Parent id,Lang id,Name,Order id"; a++; 
+
+pizza_reviews
+restaurantId
+date 
+reviewText 
+stars 
+
+ tables[a] = "pizza_reviews:restaurantId,date,reviewText,stars:INT,INT,VARCHAR(100),TINYINT UNSIGNED:input,input,input,input:Restaurant id,Date,Review text,Stars:Restaurant id,Date,Review text,Stars"; a++; 
+
+
+-------------------------------------------------------
+
+create table pizza_users (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,name VARCHAR(50),email VARCHAR(50),phone VARCHAR(20),password VARCHAR(50),address VARCHAR(50),coordsXY VARCHAR(50),city VARCHAR(50),doorCode VARCHAR(20),joinedDate INT,totOrders INT,defaultRestaurantIds VARCHAR(50));
+
+INSERT INTO pizza_users (name,email,phone,password,address,coordsXY,city,doorCode,joinedDate,totOrders,defaultRestaurantIds) VALUES ('name1','email1','phone1','password1','address1','coordsXY1','city1','doorCode1',1,1,'defaultRestaurantIds1');
+INSERT INTO pizza_users (name,email,phone,password,address,coordsXY,city,doorCode,joinedDate,totOrders,defaultRestaurantIds) VALUES ('name2','email2','phone2','password2','address2','coordsXY2','city2','doorCode2',2,2,'defaultRestaurantIds2');
+INSERT INTO pizza_users (name,email,phone,password,address,coordsXY,city,doorCode,joinedDate,totOrders,defaultRestaurantIds) VALUES ('name3','email3','phone3','password3','address3','coordsXY3','city3','doorCode3',3,3,'defaultRestaurantIds3');
+INSERT INTO pizza_users (name,email,phone,password,address,coordsXY,city,doorCode,joinedDate,totOrders,defaultRestaurantIds) VALUES ('name4','email4','phone4','password4','address4','coordsXY4','city4','doorCode4',4,4,'defaultRestaurantIds4');
+INSERT INTO pizza_users (name,email,phone,password,address,coordsXY,city,doorCode,joinedDate,totOrders,defaultRestaurantIds) VALUES ('name5','email5','phone5','password5','address5','coordsXY5','city5','doorCode5',5,5,'defaultRestaurantIds5');
+
+create table pizza_cashUsers (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,restaurantId INT,userId INT);
+
+INSERT INTO pizza_cashUsers (restaurantId,userId) VALUES (1,1);
+INSERT INTO pizza_cashUsers (restaurantId,userId) VALUES (2,2);
+INSERT INTO pizza_cashUsers (restaurantId,userId) VALUES (3,3);
+INSERT INTO pizza_cashUsers (restaurantId,userId) VALUES (4,4);
+INSERT INTO pizza_cashUsers (restaurantId,userId) VALUES (5,5);
+
+create table pizza_meals (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,restaurantId INT,groupId TINYINT UNSIGNED,name VARCHAR(50),descriptionText VARCHAR(255),ingredientIds VARCHAR(255),price INT);
+
+INSERT INTO pizza_meals (restaurantId,groupId,name,descriptionText,ingredientIds,price) VALUES (1,1,'name1','descriptionText1','ingredientIds1',1);
+INSERT INTO pizza_meals (restaurantId,groupId,name,descriptionText,ingredientIds,price) VALUES (2,2,'name2','descriptionText2','ingredientIds2',2);
+INSERT INTO pizza_meals (restaurantId,groupId,name,descriptionText,ingredientIds,price) VALUES (3,3,'name3','descriptionText3','ingredientIds3',3);
+INSERT INTO pizza_meals (restaurantId,groupId,name,descriptionText,ingredientIds,price) VALUES (4,4,'name4','descriptionText4','ingredientIds4',4);
+INSERT INTO pizza_meals (restaurantId,groupId,name,descriptionText,ingredientIds,price) VALUES (5,5,'name5','descriptionText5','ingredientIds5',5);
+
+create table pizza_mealVariations (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,mealId INT,name VARCHAR(50),priceAdd INT);
+
+INSERT INTO pizza_mealVariations (mealId,name,priceAdd) VALUES (1,'name1',1);
+INSERT INTO pizza_mealVariations (mealId,name,priceAdd) VALUES (2,'name2',2);
+INSERT INTO pizza_mealVariations (mealId,name,priceAdd) VALUES (3,'name3',3);
+INSERT INTO pizza_mealVariations (mealId,name,priceAdd) VALUES (4,'name4',4);
+INSERT INTO pizza_mealVariations (mealId,name,priceAdd) VALUES (5,'name5',5);
+
+create table pizza_ingredientsToMeals (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,mealId INT,ingredientId INT,priceIfextra INT,orderId TINYINT UNSIGNED);
+
+INSERT INTO pizza_ingredientsToMeals (mealId,ingredientId,priceIfextra,orderId) VALUES (1,1,1,1);
+INSERT INTO pizza_ingredientsToMeals (mealId,ingredientId,priceIfextra,orderId) VALUES (2,2,2,2);
+INSERT INTO pizza_ingredientsToMeals (mealId,ingredientId,priceIfextra,orderId) VALUES (3,3,3,3);
+INSERT INTO pizza_ingredientsToMeals (mealId,ingredientId,priceIfextra,orderId) VALUES (4,4,4,4);
+INSERT INTO pizza_ingredientsToMeals (mealId,ingredientId,priceIfextra,orderId) VALUES (5,5,5,5);
+
+create table pizza_ingredientNames (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,restaurantId INT,langId TINYINT UNSIGNED,name VARCHAR(50));
+
+INSERT INTO pizza_ingredientNames (restaurantId,langId,name) VALUES (1,1,'name1');
+INSERT INTO pizza_ingredientNames (restaurantId,langId,name) VALUES (2,2,'name2');
+INSERT INTO pizza_ingredientNames (restaurantId,langId,name) VALUES (3,3,'name3');
+INSERT INTO pizza_ingredientNames (restaurantId,langId,name) VALUES (4,4,'name4');
+INSERT INTO pizza_ingredientNames (restaurantId,langId,name) VALUES (5,5,'name5');
+
+create table pizza_mealGroups (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,langId INT,name VARCHAR(50));
+
+INSERT INTO pizza_mealGroups (langId,name) VALUES (1,'name1');
+INSERT INTO pizza_mealGroups (langId,name) VALUES (2,'name2');
+INSERT INTO pizza_mealGroups (langId,name) VALUES (3,'name3');
+INSERT INTO pizza_mealGroups (langId,name) VALUES (4,'name4');
+INSERT INTO pizza_mealGroups (langId,name) VALUES (5,'name5');
+
+create table pizza_orders (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,userId TINYINT UNSIGNED,estimatedDeliveryTime INT,isDelivery BOOLEAN,message VARCHAR(255),doorCode VARCHAR(20),phone VARCHAR(20),totalSum INT,paymentType INT);
+
+INSERT INTO pizza_orders (userId,estimatedDeliveryTime,isDelivery,message,doorCode,phone,totalSum,paymentType) VALUES (1,1,'isDelivery1','message1','doorCode1','phone1',1,1);
+INSERT INTO pizza_orders (userId,estimatedDeliveryTime,isDelivery,message,doorCode,phone,totalSum,paymentType) VALUES (2,2,'isDelivery2','message2','doorCode2','phone2',2,2);
+INSERT INTO pizza_orders (userId,estimatedDeliveryTime,isDelivery,message,doorCode,phone,totalSum,paymentType) VALUES (3,3,'isDelivery3','message3','doorCode3','phone3',3,3);
+INSERT INTO pizza_orders (userId,estimatedDeliveryTime,isDelivery,message,doorCode,phone,totalSum,paymentType) VALUES (4,4,'isDelivery4','message4','doorCode4','phone4',4,4);
+INSERT INTO pizza_orders (userId,estimatedDeliveryTime,isDelivery,message,doorCode,phone,totalSum,paymentType) VALUES (5,5,'isDelivery5','message5','doorCode5','phone5',5,5);
+
+create table pizza_orderItems (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,orderId INT,mealId INT,variationId INT,price INT);
+
+INSERT INTO pizza_orderItems (orderId,mealId,variationId,price) VALUES (1,1,1,1);
+INSERT INTO pizza_orderItems (orderId,mealId,variationId,price) VALUES (2,2,2,2);
+INSERT INTO pizza_orderItems (orderId,mealId,variationId,price) VALUES (3,3,3,3);
+INSERT INTO pizza_orderItems (orderId,mealId,variationId,price) VALUES (4,4,4,4);
+INSERT INTO pizza_orderItems (orderId,mealId,variationId,price) VALUES (5,5,5,5);
+
+create table pizza_restaurants (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,country TINYINT UNSIGNED,area1 INT,area2 INT,area3 INT,area4 INT,area5 INT,coordsXY VARCHAR(50),address VARCHAR(50),phone VARCHAR(20),listingImg CHAR(8),outsideImg CHAR(8),imgTagIds VARCHAR(50),deliveryTime INT,name VARCHAR(50),avgStars TINYINT UNSIGNED,totVotes INT,priceLevel TINYINT UNSIGNED,foodTypeIds VARCHAR(50),minPurchase INT,deliveryPrice INT,bonus TINYINT UNSIGNED,openingHoursString VARCHAR(255),mapCoords VARCHAR(50),paymentTime TINYINT UNSIGNED,paymentTypeIds VARCHAR(255));
+
+INSERT INTO pizza_restaurants (country,area1,area2,area3,area4,area5,coordsXY,address,phone,listingImg,outsideImg,imgTagIds,deliveryTime,name,avgStars,totVotes,priceLevel,foodTypeIds,minPurchase,deliveryPrice,bonus,openingHoursString,mapCoords,paymentTime,paymentTypeIds) VALUES (1,1,1,1,1,1,'coordsXY1','address1','phone1','listi1','outsi1','imgTagIds1',1,'name1',1,1,1,'foodTypeIds1',1,1,1,'openingHoursString1','mapCoords1',1,'paymentTypeIds1');
+INSERT INTO pizza_restaurants (country,area1,area2,area3,area4,area5,coordsXY,address,phone,listingImg,outsideImg,imgTagIds,deliveryTime,name,avgStars,totVotes,priceLevel,foodTypeIds,minPurchase,deliveryPrice,bonus,openingHoursString,mapCoords,paymentTime,paymentTypeIds) VALUES (2,2,2,2,2,2,'coordsXY2','address2','phone2','listi2','outsi2','imgTagIds2',2,'name2',2,2,2,'foodTypeIds2',2,2,2,'openingHoursString2','mapCoords2',2,'paymentTypeIds2');
+INSERT INTO pizza_restaurants (country,area1,area2,area3,area4,area5,coordsXY,address,phone,listingImg,outsideImg,imgTagIds,deliveryTime,name,avgStars,totVotes,priceLevel,foodTypeIds,minPurchase,deliveryPrice,bonus,openingHoursString,mapCoords,paymentTime,paymentTypeIds) VALUES (3,3,3,3,3,3,'coordsXY3','address3','phone3','listi3','outsi3','imgTagIds3',3,'name3',3,3,3,'foodTypeIds3',3,3,3,'openingHoursString3','mapCoords3',3,'paymentTypeIds3');
+INSERT INTO pizza_restaurants (country,area1,area2,area3,area4,area5,coordsXY,address,phone,listingImg,outsideImg,imgTagIds,deliveryTime,name,avgStars,totVotes,priceLevel,foodTypeIds,minPurchase,deliveryPrice,bonus,openingHoursString,mapCoords,paymentTime,paymentTypeIds) VALUES (4,4,4,4,4,4,'coordsXY4','address4','phone4','listi4','outsi4','imgTagIds4',4,'name4',4,4,4,'foodTypeIds4',4,4,4,'openingHoursString4','mapCoords4',4,'paymentTypeIds4');
+INSERT INTO pizza_restaurants (country,area1,area2,area3,area4,area5,coordsXY,address,phone,listingImg,outsideImg,imgTagIds,deliveryTime,name,avgStars,totVotes,priceLevel,foodTypeIds,minPurchase,deliveryPrice,bonus,openingHoursString,mapCoords,paymentTime,paymentTypeIds) VALUES (5,5,5,5,5,5,'coordsXY5','address5','phone5','listi5','outsi5','imgTagIds5',5,'name5',5,5,5,'foodTypeIds5',5,5,5,'openingHoursString5','mapCoords5',5,'paymentTypeIds5');
+
+create table pizza_businessHours (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,resaurantId INT,weekdayIdOrDate INT,openHour INT,closeHour INT);
+
+INSERT INTO pizza_oHours (resaurantId,weekdayIdOrDate,openHour,closeHour) VALUES (1,1,1,1);
+INSERT INTO pizza_oHours (resaurantId,weekdayIdOrDate,openHour,closeHour) VALUES (2,2,2,2);
+INSERT INTO pizza_oHours (resaurantId,weekdayIdOrDate,openHour,closeHour) VALUES (3,3,3,3);
+INSERT INTO pizza_oHours (resaurantId,weekdayIdOrDate,openHour,closeHour) VALUES (4,4,4,4);
+INSERT INTO pizza_oHours (resaurantId,weekdayIdOrDate,openHour,closeHour) VALUES (5,5,5,5);
+
+create table pizza_imgTags (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,lang TINYINT UNSIGNED,name VARCHAR(15),orderId INT);
+
+INSERT INTO pizza_imgTags (lang,name,orderId) VALUES (1,'name1',1);
+INSERT INTO pizza_imgTags (lang,name,orderId) VALUES (2,'name2',2);
+INSERT INTO pizza_imgTags (lang,name,orderId) VALUES (3,'name3',3);
+INSERT INTO pizza_imgTags (lang,name,orderId) VALUES (4,'name4',4);
+INSERT INTO pizza_imgTags (lang,name,orderId) VALUES (5,'name5',5);
+
+create table pizza_foodTypes (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,parentId INT,langId INT,name VARCHAR(50),orderId TINYINT UNSIGNED);
+
+INSERT INTO pizza_foodTypes (parentId,langId,name,orderId) VALUES (1,1,'name1',1);
+INSERT INTO pizza_foodTypes (parentId,langId,name,orderId) VALUES (2,2,'name2',2);
+INSERT INTO pizza_foodTypes (parentId,langId,name,orderId) VALUES (3,3,'name3',3);
+INSERT INTO pizza_foodTypes (parentId,langId,name,orderId) VALUES (4,4,'name4',4);
+INSERT INTO pizza_foodTypes (parentId,langId,name,orderId) VALUES (5,5,'name5',5);
+
+create table pizza_reviews (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,restaurantId INT,date INT,reviewText BLOB,stars TINYINT UNSIGNED);
+
+INSERT INTO pizza_reviews (restaurantId,date,reviewText,stars) VALUES (1,1,'reviewText1',1);
+INSERT INTO pizza_reviews (restaurantId,date,reviewText,stars) VALUES (2,2,'reviewText2',2);
+INSERT INTO pizza_reviews (restaurantId,date,reviewText,stars) VALUES (3,3,'reviewText3',3);
+INSERT INTO pizza_reviews (restaurantId,date,reviewText,stars) VALUES (4,4,'reviewText4',4);
+INSERT INTO pizza_reviews (restaurantId,date,reviewText,stars) VALUES (5,5,'reviewText5',5);
+
+
+
+
+---------------
+create table users (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,name VARCHAR(50),email VARCHAR(50),phone VARCHAR(20),password VARCHAR(50),address VARCHAR(50),coordsXY VARCHAR(50),city VARCHAR(50),doorCode VARCHAR(20),joinedDate INT,totOrders INT,defaultRestaurantIds VARCHAR(50));
+
+
+create table cashUsers (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,restaurantId INT,userId INT);
+
+
+create table meals (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,restaurantId INT,groupId TINYINT UNSIGNED,name VARCHAR(50),descriptionText VARCHAR(255),ingredientIds VARCHAR(255),price INT);
+
+
+create table mealVariations (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,mealId INT,name VARCHAR(50),priceAdd INT);
+
+
+create table ingredientsToMeals (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,mealId INT,ingredientId INT,priceIfextra INT,orderId TINYINT UNSIGNED);
+
+
+create table ingredientNames (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,restaurantId INT,langId TINYINT UNSIGNED,name VARCHAR(50));
+
+
+create table mealGroups (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,langId INT,name VARCHAR(50));
+
+
+create table pizza_orders (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,userId TINYINT UNSIGNED,estimatedDeliveryTime INT,isDelivery BOOLEAN,message VARCHAR(255),doorCode VARCHAR(20),phone VARCHAR(20),totalSum INT,paymentType INT);
+
+
+create table orderItems (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,orderId INT,mealId INT,variationId INT,price INT);
+
+
+create table restaurants (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,country TINYINT UNSIGNED,area1 INT,area2 INT,area3 INT,area4 INT,area5 INT,coordsXY VARCHAR(50),address VARCHAR(50),phone VARCHAR(20),listingImg CHAR(8),outsideImg CHAR(8),imgTagIds VARCHAR(50),deliveryTime INT,name VARCHAR(50),avgStars TINYINT UNSIGNED,totVotes INT,priceLevel TINYINT UNSIGNED,foodTypeIds VARCHAR(50),minPurchase INT,deliveryPrice INT,bonus TINYINT UNSIGNED,openingHoursString VARCHAR(255),mapCoords VARCHAR(50),paymentTime TINYINT UNSIGNED,paymentTypeIds VARCHAR(255));
+
+create table businessHours (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,resaurantId INT,weekdayIdOrDate INT,openHour INT,closeHour INT);
+
+
+create table imgTags (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,lang TINYINT UNSIGNED,name VARCHAR(15),orderId INT);
+
+create table foodTypes (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,parentId INT,langId INT,name VARCHAR(50),orderId TINYINT UNSIGNED);
+
+create table reviews (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,restaurantId INT,date INT,reviewText BLOB,stars TINYINT UNSIGNED);
+----------------------------
+index:
+getRestaurants (by area)
+
+restaurants restaurant
+
+--------- details ---------:
+getRestaurant ?
+
+combine the 3 first in temp table: mealsCache -table
+-getMealGroups
+-getMeals (join-getIngredientsToMeals
+  join: getMealOptions)
+getComments
+saveComment
+
+user restaurant
+ mealGroups meals(with ingr & options)
+ comments comment
+---------registerUser---------:
+saveUser 
+
+user
+---------login---------:
+getUser
+user
+---------registerRestaurant---------: 
+saveRestaurant (without  foodTypeIds)
+restaurant
+
+---------- menu ----------:
+getAllMealGroups
+getAllIngredientsToMeals
+
+saveFoodTypeIds  --> restaurants table
+saveMealGroups
+saveMeals
+saveIngredientsToMeals
+saveMealOptions
+
+allMealGroups allIngredientsToMeals
+user restaurant mealGroups meals
+ingredientsToMeals mealOptions
+
+- if edit -:
+getAllMealGroups
+getAllIngredientsToMeals
+
+is already-getFoodTypeIds (from restaurant table)
+getMealGroups
+getMeals
+getIngredientsToMeals
+getMealOptions
+
+
+
+
+--------------------
+getRestaurant (incl. foodTypeIds)
+
+saveMealGroups
+create table mealGroups (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,langId INT,name VARCHAR(50));
+
+saveMeals
+create table meals (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,restaurantId INT,groupId TINYINT UNSIGNED,name VARCHAR(50),descriptionText VARCHAR(255),ingredientIds VARCHAR(255),price INT);
+
+saveIngredientsToMeals
+create table ingredientsToMeals (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,mealId INT,ingredientId INT,priceIfextra INT,orderId TINYINT UNSIGNED);
+
+
+HUOM!!!! lisää tähän groupId !!!!!!!!! jos koskee kaikkia ryhmän mealeja!
+create table mealVariations (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,mealId INT,name VARCHAR(50),priceAdd INT);
+
+create table ingredientNames (id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,restaurantId INT,langId TINYINT UNSIGNED,name VARCHAR(50));
+---------------
+addFoodType(id) {
+			console.log('this.selFoodTypes.length:', this.selFoodTypes.length);
+			let sel = { "id": id, "name": this.foodTypes.find(k => k.id == id).name };
+			//let sel = { "id": id, "name": "TEST name" };
+			// check if exists already
+			//if(typeof this.selFoodTypes !== 'undefined') {
+			if(this.selFoodTypes.length > 0) {
+				let index = this.selFoodTypes.findIndex(el => el.id === id);
+			console.log('this.selFoodTypes idx:', index);
+				//if(index == -1 && this.selFoodTypes.length < 8) {
+				if(index > -1 || this.selFoodTypes.length > 7) {
+					return;
+					//this.selFoodTypes.push(sel);
+					//this.selFoodTypes.set(this.selFoodTypes, this.selFoodTypes, sel)
+				}
+			} else {
+				this.selFoodTypes.push(sel);
+				this.selFoodType = -1;
+			}
+		
+		},
+
+----------------------------------------------------------------------------------
+
+Menu creator TODO:
+Add:
+
+delete All in each step
+
+let user select in importing: separator: new row, comma
+
+add popup help text next to import fields
+
+language selector
+
+
+
+conbine rwos listinbg:
+groups
+ingredients
+options
+
+edit all the fields!!!
+
+language support
