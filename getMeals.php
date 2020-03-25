@@ -11,7 +11,7 @@ if($d["restaurantId"] != '') {
 
 if($id == '-1') { echo 'restaurantId missing'; exit;}
 
-$sql = "SELECT id,groupId,name,descText,ingredientIds,price,variationIds,orderId FROM meals WHERE restaurantId = " . $id;
+$sql = "SELECT id,restaurantId,groupId,name,descText,ingredients,price,variationIds,orderId FROM meals WHERE restaurantId = " . $id;
 
 $result = mysqli_query($conn, $sql);
 if ($result === false) {

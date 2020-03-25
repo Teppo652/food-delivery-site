@@ -3,16 +3,21 @@ include_once('functions.php');
 $conn = getDBConn('noWelcomeText'); 
 
 // read restaurantId from url
+/*
 $restaurantId = "-1";
 if (isset($_GET['rId']))
 {
   $restaurantId = filter_input( INPUT_GET, 'rId', FILTER_SANITIZE_URL );
 }
 if($restaurantId == '-1') { echo 'restaurantId missing'; exit;}
+*/
 
 // read data
 $id = '-1';
 $dArr = json_decode(file_get_contents('php://input'), true);
+
+// read restaurantId from first item
+$restaurantId = $dArr[0]["restaurantId"];
 
 // delete existing in DB
 // DELETE FROM mealGroups WHERE restaurantId = 555
@@ -27,7 +32,7 @@ $dArr = json_decode(file_get_contents('php://input'), true);
 
 for($i=0; $i<count($dArr); $i++) {
 	$values = 
-	$restaurantId . "," . 
+	$dArr[$i]["restaurantId"] . "," . 
 	$dArr[$i]["langId"] . ",'" . 
 	$dArr[$i]["name"] . "'," . 
 	$dArr[$i]["orderId"]; 
