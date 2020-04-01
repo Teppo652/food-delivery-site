@@ -21,14 +21,31 @@
           </div>
           <div class="navbar-menu">
             <div class="navbar-start">
-              <!-- change language
-              <div class="navbar-item has-dropdown is-hoverable"><a class="navbar-link">Language</a>
+              <!-- change language 
+              <div class="navbar-item has-dropdown is-hoverable"><a class="navbar-link">Language {{ lang }}</a>
                 <div class="navbar-dropdown">
-                  <a class="navbar-item navbar-item-dropdown" href="#">English</a>
-                <a class="navbar-item navbar-item-dropdown" href="#">Swedish</a></div>
-              </div>
-              -->
+                  <a class="navbar-item navbar-item-dropdown" @click.prevent="changeLang('en')" href="#">English</a>
+                  <a class="navbar-item navbar-item-dropdown" @click.prevent="changeLang('fi')" href="#">Finnish</a>
+                  <a class="navbar-item navbar-item-dropdown" @click.prevent="changeLang('sv')" href="#">Swedish</a>
+                </div>
+              </div> -->           
             </div>
+
+            <!-- change locale 
+            <div class="navbar-item has-dropdown is-hoverable"><a class="navbar-link">Language {{ lang }}</a>
+              <div class="navbar-dropdown">
+                
+                <a class="navbar-item navbar-item-dropdown" @click.prevent="changeLang('uk-en')" href="#">English</a>
+                <a class="navbar-item navbar-item-dropdown" @click.prevent="changeLang('fi-fi')" href="#">Finnish</a>
+                <a class="navbar-item navbar-item-dropdown" @click.prevent="changeLang('sv-se')" href="#">Swedish</a>
+                
+                <a v-for="c in locales" :key="c.code" :value="c.code"
+                   class="navbar-item navbar-item-dropdown" 
+                   @click.prevent="changeLang(c.code)" 
+                   href="#">{{ c.name }}</a>
+              </div>
+            </div>   -->
+
             <div class="navbar-end">
               <!-- orig from laundrier: 
               <router-link class="navbar-item"  to="/booking">My bookings</router-link>               
@@ -45,19 +62,22 @@
               </div>
               -->
               <router-link class="navbar-item" to="/">Home</router-link>
-              <router-link class="navbar-item" to="/Listing\">Listing</router-link>
-              <router-link class="navbar-item" to="/Restaurant\">Restaurant</router-link>
-              <router-link class="navbar-item" to="/RegisterRestaurant\">Register restaurant</router-link>
-              <router-link class="navbar-item" to="/Menu\">Menu</router-link>
-              <router-link class="navbar-item" to="/Orders\">Orders</router-link>
-              <router-link class="navbar-item" to="/Login\">Login</router-link>
-              <router-link class="navbar-item" to="/Register\">Register</router-link>
+              <router-link class="navbar-item" to="/Listing">Listing</router-link>
+              <router-link class="navbar-item" to="/Restaurant">Restaurant</router-link>
+              <router-link class="navbar-item" to="/Orders">Orders</router-link>
+              <router-link class="navbar-item" to="/Login">Login</router-link>
+              <router-link class="navbar-item" to="/Register">Register</router-link>
+              <router-link class="navbar-item" to="/RegisterRestaurant">Register restaurant</router-link>
+              <router-link class="navbar-item" to="/Menu">Menu</router-link>
+              <router-link class="navbar-item" to="/deliveryDetails">Delivery details</router-link>
+
             </div>
           </div>
+
         </div>
+        <router-view/>
       </nav>
     </div>
-    <router-view/>
     <footer>
       Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
     </footer>
@@ -67,6 +87,31 @@
     </div>-->
   </div>
 </template>
+
+<script>
+import { mapGetters, mapActions } from "vuex"
+export default {
+	name: 'App',
+	data () {
+		return {      
+		}
+	}, /*
+	methods: {
+    changeLocale(val) {	
+      console.log('100 changeLocale:', val);		
+			this.changeLocale(val);
+	}, 
+		...mapActions(["getLocales", "changeLocale", "changeLang"])
+  },
+	created: function () {
+    this.getLocales();
+	},
+	watch: {
+
+	},
+	computed: mapGetters(["locales", "locale", "lang"]) */
+}
+</script>
 
 <style>
 

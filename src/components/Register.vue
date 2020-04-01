@@ -1,271 +1,212 @@
 <template>
-	<div>
-		<div class="container is-fluid">
-			<section class="section">
-        <div class="columns is-centered">
-          <div class="column is-5 is-3-desktop">
+   <div>      
+    <section class="section">
+      <div class="container has-text-centered">
 
-				    <h1>Register</h1>
+          <h2 class="title">{{ t.register_title }}</h2>
+          
+          <div class="columns is-centered">
+            <div class="column is-5 is-3-desktop">
+              <form>
+                                      
+                <!-- error message -->
+                <div v-show="errorMsg != ''" class="notification is-danger">                
+                  <strong>{{ errorMsg }}</strong>
+                </div>
 
-				    <!-- error messages -->
-            <article v-show="typeof errors !== 'undefined' && errors.length > 0"
-                class="message is-danger">
-              <div class="message-header">Please check</div>
-              <ul class="message-body errors">
-                  <li v-for="(err, index) in errors" :key="index">{{ err }}</li>
-              </ul>
-            </article>
+                    <!-- name 
+                    <div v-show="!isAdmin" class="field">
+                      <div class="control">
+                        <label for="name">Name</label>
+                        <input id="name"
+                          type="text"
+                          class="input" 
+                          :disabled="!codeAccepted"
+                          v-model="newUser.name"
+                        />
+                      </div>
+                    </div>-->
+                    
+                    <!-- apartment number 
+                    <div v-show="!isAdmin" class="field">
+                      <div class="control">
+                        <label for="aptNumber">Apartment number</label>
+                        <input id="aptNumber"
+                          type="text"
+                          class="input" 
+                          :disabled="!codeAccepted"
+                          v-model="newUser.aptNumber"
+                        />
+                      </div>
+                    </div>-->
 
-            <!-- name -->
-            <div class="control">
-              <label for="name">Name</label>
-              <input id="name"
-                    type="text"
-                    class="input"
-                    v-model="user.name"
-				  	        :class="charsLeft(50, user.name)[0] ? 'exceedTextLength' : ''"
-				      />
-				      <span class="is-right">												
-				      	<span class="textLimiter is-pulled-right is-size-7" 
-				      			:class="charsLeft(50, user.name)[0] ? 'has-text-danger' 
-				      			: ''">{{ charsLeft(50, user.name)[1] }}
-				      	</span> 
-				      </span>
-            </div>
-
-				    <!-- address -->
-            <div class="control">
-              <label for="address">Street address</label>
-              <input id="address"
-                      type="text"
-                      class="input"
-                      v-model="user.address"
-				  	 :class="charsLeft(50, user.address)[0] ? 'exceedTextLength' : ''"
-				      />
-				      <span class="is-right">												
-				      	<span class="textLimiter is-pulled-right is-size-7" 
-				      			:class="charsLeft(50, user.address)[0] ? 'has-text-danger' 
-				      			: ''">{{ charsLeft(50, user.address)[1] }}
-				      	</span> 
-				      </span>
-            </div>
-
-				    <!-- city -->
-            <div class="control">
-              <label for="city">City</label>
-              <input id="city"
-                type="text"
-                class="input"
-                v-model="user.city"
-				  	    :class="charsLeft(50, user.city)[0] ? 'exceedTextLength' : ''"
-				      />
-				      <span class="is-right">												
-				      	<span class="textLimiter is-pulled-right is-size-7" 
-				      			:class="charsLeft(50, user.city)[0] ? 'has-text-danger' 
-				      			: ''">{{ charsLeft(50, user.city)[1] }}
-				      	</span> 
-				      </span>
-            </div>
-
-            <!-- phone -->
-            <div class="control">
-              <label for="phone">Phone</label>
-              <input id="phone"
-                    type="text"
-                    class="input"
-                    v-model="user.phone"
-				  	        :class="charsLeft(20, user.phone)[0] ? 'exceedTextLength' : ''"
-				      />
-				      <span class="is-right">												
-				      	<span class="textLimiter is-pulled-right is-size-7" 
-				      			:class="charsLeft(20, user.phone)[0] ? 'has-text-danger' 
-				      			: ''">{{ charsLeft(20, user.phone)[1] }}
-				      	</span> 
-				      </span>
-            </div>
-
-            <!-- email -->  
-            <div class="field">
-              <div class="control">
-                <label for="email">Email</label>
-                <input id="email"
-                      type="email"
-                      class="input"
-                      name="email"
-                      v-model="user.email"
-				  	          :class="charsLeft(50, user.email)[0] ? 'exceedTextLength' : ''"
-                />
-				        <span class="is-right">												
-				        	<span class="textLimiter is-pulled-right is-size-7" 
-				        			:class="charsLeft(50, user.email)[0] ? 'has-text-danger' 
-				        			: ''">{{ charsLeft(50, user.email)[1] }}
-				        	</span> 
-				        </span>
-              </div>
-            </div>            
-  
-            <!-- password -->  
-            <div class="field">
-              <p class="control has-addons">
-                <label for="password">Password</label>
-                <input id="password"
-                        type="password"
+                    <!-- email -->  
+                    <div class="field">
+                      <div class="control">
+                        <label for="email">{{ t.email }}</label>
+                        <input id="email"
+                        type="email"
                         class="input"
-                        placeholder="Password"
-                        v-model="user.password"
-				  	            :class="charsLeft(50, user.password)[0] ? 'exceedTextLength' : ''"
-				        />
-				        <span class="is-right">												
-				        	<span class="textLimiter is-pulled-right is-size-7" 
-				        			:class="charsLeft(50, user.password)[0] ? 'has-text-danger' 
-				        			: ''">{{ charsLeft(50, user.password)[1] }}
-				        	</span> 
-				        </span>                
-              </p>
-              <button @click.prevent="passwordHelper ? passwordHelper = false : passwordHelper = true"
-                  class="button moreInfo">
-                <span class="icon is-primary">
-                  <i class="fas fa-info-circle"></i>
-                </span>
-              </button>
+                        :placeholder=t.email
+                        name="email"
+                        v-model="newUser.email"
+                      />
+                      </div>
+                    </div>
 
-				      <!-- password help text -->
-              <div v-if="passwordHelper" class="notification is-link">
-                <button class="delete" @click.prevent="passwordHelper = false"></button> 
-                <ul>Password must include at least:
-                  <li>One number</li>
-                  <li>One lowercase letter</li>
-                  <li>One uppercase letter</li>
-                  <li>Six characters long</li>
-                </ul>
-              </div>
+                    <!-- password -->  
+                    <div class="field">
+                      <p class="control has-addons">
+                        <label for="password">{{ t.pw }}</label>
+                        <input id="password"
+                          type="password"
+                          class="input"
+                          :placeholder=t.pw
+                          v-model="newUser.password"
+                        />
+                      </p>
+                      <button @click.prevent="passwordHelper ? passwordHelper = false : passwordHelper = true"
+                          class="button moreInfo">
+                        <span class="icon is-primary">
+                          <i class="fas fa-info-circle"></i>
+                        </span>
+                      </button>
+                    </div>
+                    <div v-if="passwordHelper" class="notification is-link">
+                      <button class="delete" @click.prevent="passwordHelper = false"></button> 
+                      <ul>{{ t.register_pwRules }}:
+											<li>{{ t.pwRule1 }}</li>
+											<li>{{ t.pwRule2 }}</li>
+											<li>{{ t.pwRule3 }}</li>
+											<li>{{ t.pwRule4 }}</li>
+                      </ul>
+                    </div>
 
-              <!-- passwordAgain -->
-				      <p class="control has-addons">
-                <label for="passwordAgain">Password again</label>
-                <input id="passwordAgain"
-                        type="password"
-                        class="input"
-                        v-model="passwordAgain"
-				  	            :class="charsLeft(50, passwordAgain)[0] ? 'exceedTextLength' : ''"
-				        />
-				        <span class="is-right">												
-				        	<span class="textLimiter is-pulled-right is-size-7" 
-				        			:class="charsLeft(50, passwordAgain)[0] ? 'has-text-danger' 
-				        			: ''">{{ charsLeft(50, passwordAgain)[1] }}
-				        	</span> 
-				        </span>                
-              </p>
+                    <!-- passwordAgain 
+                    <div class="field">
+                      <p class="control has-addons">
+                        <label for="passwordAgain">Password again</label>
+                        <input id="passwordAgain"
+                          type="password"
+                          class="input"
+                           placeholder="Password again"
+                          v-model="passwordAgain"
+                        />
+                      </p>
+                    </div>  -->
+                    
+                    <!-- remember
+                    <div class="field">
+                      <div class="control">
+                        <label class="checkbox">
+                        <input v-model="newUser.remember" type="checkbox">
+                          Remember me
+                        </label>
+                      </div>
+                    </div> --> 
+
+                    <!-- register btn -->  
+                    <div class="field">
+                      <div class="control">
+                        <button type="submit"
+                          @click.prevent="formSubmitted" 
+                          class="button is-primary is-fullwidth">{{ t.register_title }}</button>
+                      </div>
+                    </div>
+
+                  <small>
+                    <router-link class="has-text-centered" to="/Login">{{ t.register_goToLogin }}</router-link>
+                  </small>
+
+
+              </form>
             </div>
+          </div>
 
-            <!-- remember  -->
-            <div class="field">
-              <div class="control">
-                <label class="checkbox">
-                <input v-model="remember" type="checkbox">
-                  Remember me on this device
-                </label>
-              </div>
-            </div>
-
-            <!-- terms  -->
-            <div class="field">
-              <div class="control">
-                <label class="checkbox">
-                <input v-model="terms" type="checkbox">
-                  I accept <a href="#">site terms</a>
-                </label>
-              </div>
-            </div>
-
-            <!-- register btn -->  
-            <div class="field">
-              <div class="control">
-                <button type="submit"
-                  @click.prevent="register" 
-                  class="button is-primary is-fullwidth">Register</button>
-              </div>
-            </div>
-
-          </div>  
-        </div>
-			</section>
-		</div>
-	</div>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex"
 export default {
-	name: 'Register',
-	data () {
-		return {
-      user: {
-        name: 'John Doe', //null,
-        email: 'test2@test.com', //null,        
-        phone: '1234567890', //null,
-        password: '123qweQWE', //null
-        address: 'Test street 1', //null
-        city: 'Test city' //null
+  name: "register",
+  data() {
+    return {
+      userId: null,
+      usersHouseId: null,
+      isAdmin: false,
+      newUser: {
+        houseId: -1,
+        isAdmin: 0,
+        name: '', 
+        email: null,
+        password: null,
+        remember: false,     
+        aptNumber: ''
       },
-      remember: false,
-      terms: false,
-			passwordHelper: false,
-      passwordAgain:  '123qweQWE', //null
-      errors: []
-		}
-	},
-	methods: {
-		register: function() {
-      this.errors = [];
-      if(this.user.name == null)  { this.errors.push('Name'); }
-      if(this.user.email == null)  { this.errors.push('Email'); }
-      if(this.user.phone == null)  { this.errors.push('Phone number'); }
-      if(!phoneIsValid(this.user.phone)) { this.errors.push('Phone number'); }
-      if(!emailIsValid(this.user.email)) { this.errors.push('Email'); }
-      if(!passwordIsValid(this.user.password)) { this.errors.push('Password'); }
-      if(this.user.password == null) { this.errors.push('Password'); }
-      if(this.passwordAgain == null) { this.errors.push('Password again'); } 
-      if(this.user.address == null)  { this.errors.push('Address'); }
-      if(this.user.city == null)  { this.errors.push('City'); }
-      if(this.terms == false)  { this.errors.push('You must accept site terms to use the web site'); }      
-      if(this.user.password !== this.passwordAgain) { this.errors.push('Passwords must match'); }      
-      console.log('this.errors:', this.errors);
-      if(this.errors.length == 0) {
-        this.user.name = clean(this.user.name.trim());
-        this.user.email = clean(this.user.email.trim());
-        this.user.phone = clean(this.user.phone.trim());
-        this.user.password = clean(this.user.password.trim());
-        this.user.address = clean(this.user.address.trim());
-        this.user.city = clean(this.user.city.trim());
+      tr: null,
+      passwordHelper: false,
+      passwordAgain: '',
+      userCreated: false,
+      userCreatedInAuthSystem: false,
+      userSaved: false,
+      errorMsg: ''
+    };
+  },
+  methods: {
+    formSubmitted: function(e) {       
+      if(this.newUser.remember == true) { this.newUser.remember = '1'; }
+      this.newUser.email = this.newUser.email.trim();
+      this.passwordAgain = this.passwordAgain.trim();
+      this.newUser.password = this.newUser.password.trim();
 
-
-
-        /*
-        if(phoneIsValid(this.user.phone)) {
-          if(emailIsValid(this.user.email)) {
-              console.log('Email is valid');
-              if(passwordIsValid(this.user.password)) {
-                  console.log('Password is valid');                
-                  //this.apiCall('register', this.user); // register
-                  //this.saveUser(this.user);
-              } else {
-                  this.errors.push('Please check password: It must have at least: one number, one lowercase and one uppercase letter and at least six characters');
-              }
+      if(this.errorMsg == '') {
+        if(emailIsValid(this.newUser.email)) {
+          if(passwordIsValid(this.newUser.password)) {
+            this.saveUser(this.newUser);   
           } else {
-              this.errors.push('Please check email');
+						//this.errorMsg = 'Please check password: It must have at least: one number, one lowercase and one uppercase letter and at least six characters';
+						this.errorMsg = this.t.pwErrMsg;
           }
         } else {
-          this.errors.push('Please check phone number');
-        } */
+					//this.errorMsg = 'Please check email';
+					this.errorMsg = this.t.emailErrMsg;
+        }
       }
-		},
-		...mapActions(["saveUser"]),
-		// calculates number of characters left, returns array: [is limit exceeded, characters left / max]
-		charsLeft(maxLen, str) {
-			return [ str.length > maxLen ? true : false,
-			str.length>maxLen/2 ? maxLen - str.length + " / " + maxLen : ''];
-		},
+    },
+    ...mapActions(["getTranslations", "saveUser"])
+  }, // end methods
+	created(){	
+    this.getTranslations('fi');
+	},
+  watch: {
+    // after saveUser() code execution continues here
+    user: function() {
+      //handler() {
+        if(this.user === undefined || this.user.length == 0) {
+					//this.errorMsg = 'Please check your input data';
+					this.errorMsg = this.t.register_checkYourInput;
+        } else {
+          // not in use yet
+          if(this.user.id == 'userExists') {
+						//this.errorMsg = 'Email exists already';
+						this.errorMsg = this.t.register_emailExists;
+          } else {
+            // user save successful
+            if(this.isAdmin != 1) {  this.user.houseId = this.house.id; }
+            if(this.user.remember != '') {
+              // save into local storage
+              localStorage.setItem("remember", this.user.remember);
+              console.log('saved to local storage: ', this.user.remember);
+            }
+            // forward to next 
+            this.$router.push({ path: '/DeliveryDetails' });
+          }
+        }
+      //} // handler      
+    }, // user
     // reset error message after 5 seconds
     errorMsg:function() {
       var self = this;
@@ -274,22 +215,10 @@ export default {
             self.errorMsg = '';
         }, 5000);
       }
-    },
-		forwardToNextPage() {
-			// this.$router.replace({name: 'xxxxxxx'});
-		}
-	},
-	created: function () {
-		
-	},
-	watch: {
-		xxxxx: function() {
-
-		}
-	},
-	computed: mapGetters(["XXXuser"])
-}
+    }
+  },                  
+  created() {
+  },
+  computed: mapGetters(["t", "user"])
+};
 </script>
-
-<style scoped>
-</style>

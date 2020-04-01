@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { mapGetters,mapActions } from "vuex"
+import { mapGetters, mapActions } from "vuex"
 export default {
 	name: 'Orders',
 	data () {
@@ -26,8 +26,8 @@ export default {
 		// console.log('xxxxxx');
 		},
 		...mapActions(["saveXxxxxx"]),
-		// calculates number of characters left,returns array: [is limit exceeded,characters left / max]
-		charsLeft(maxLen,str) {
+		// calculates number of characters left, returns array: [is limit exceeded, characters left / max]
+		charsLeft(maxLen, str) {
 			return [ str.length > maxLen ? true : false,
 			maxLen - str.length + " / " + maxLen ];
 		},

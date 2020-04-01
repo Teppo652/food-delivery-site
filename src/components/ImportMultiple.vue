@@ -18,24 +18,32 @@
 							: ''">{{ charsLeft(2000, items)[1] }}</span> 
 				</span> -->
 			</p>
-			<button @click.prevent="addItems" class="button is-primary">Add</button>
+			<button @click.prevent="addItems" class="button is-primary">{{btnText}}</button>
+      <ToolTip :toolTip=toolTip class="toolTipPos" />
 		</div>  
   </div>
 </template>
 
 <script>
+import ToolTip from './ToolTip'
 export default {
   name: 'ImportMultiple',
+	components: {
+		ToolTip
+  },
 	data () {
 		return {      
       items: null
 		}
 	},
   props: {
-    placeholderText: String    
+    placeholderText: String,
+    btnText: String,
+    toolTip: String
   },
   methods: {
     addItems () {
+      if(this.items == null) return;
       this.$emit('add', this.items);
       this.items = null;
     }    
@@ -48,5 +56,8 @@ button {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
   transition-delay: .15s;
+}
+.toolTipPos {
+  margin: 7px 0 0 4px;
 }
 </style>

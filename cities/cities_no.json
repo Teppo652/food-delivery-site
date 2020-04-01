@@ -1,0 +1,18 @@
+[
+{ "id": "1", "n":	"Oslo" },
+{ "id": "2", "n":	"Bergen" },
+{ "id": "3", "n":	"Stavanger / Sandnes" },
+{ "id": "4", "n":	"Trondheim" },
+{ "id": "5", "n":	"Drammen" },
+{ "id": "6", "n":	"Fredrikstad / Sarpsborg" },
+{ "id": "7", "n":	"Skien / Porsgrunn" },
+{ "id": "8", "n":	"Kristiansand" },
+{ "id": "9", "n":	"Ålesund" },
+{ "id": "10", "n":	"Tønsberg" },
+{ "id": "11", "n":	"Moss" },
+{ "id": "12", "n":	"Haugesund" },
+{ "id": "13", "n":	"Sandefjord" },
+{ "id": "14", "n":	"Arendal" },
+{ "id": "15", "n":	"Bodø" },
+{ "id": "16", "n":	"Tromsø" }
+]

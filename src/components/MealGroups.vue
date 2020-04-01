@@ -1,22 +1,22 @@
 <template>
   <div>
-		<div class="columns is-centered is-fullwidth">
+		<div v-if="mealGroups.length>1" class="columns is-centered is-fullwidth">
     	<!-- mealGroups select -->
-			<label>Group</label>
-			<div v-if="mealGroups.length>5" class="field">
-				<div class="select is-fullwidth">
-					<select v-on:change="onSelection($event.target.value)" v-model="selMealGroup">
-						<option :value=-1>Select</option>
-						<option v-for="(mg, idx) in mealGroups" 
+			<label>{{menuGroupSelect}}</label>
+			<!--<div v-if="mealGroups.length>5" class="field"> -->
+				<div v-if="displayAs!=='boxes'" class="select is-fullwidth"> <!-- $data.__selMealGroup -->
+					<select v-on:change="onSelection($event.target.value)" v-model="selMealGroup" class="is-fullwidth">
+						<!--<option :value=-1>Select</option>-->
+						<option v-for="mg in mealGroups" 
 							:value="mg.id" 
 							:key="mg.id"
-							>{{ idx+1 }}. {{ mg.name }} - <small>{{ meals.reduce((pre, cur) => (cur.group === mg.id) ? ++pre : pre, 0) }} meals</small>
+							>{{ mg.name }} - <small style="float:right">{{ meals.reduce((pre, cur) => (cur.group === mg.id) ? ++pre : pre, 0) }} {{numberOfMealsText}}</small>
 						</option>
 					</select> 
 				</div>
 			</div>
 
-			<div v-if="mealGroups.length<6" class="field has-addons groupBoxes">
+			<div v-if="displayAs=='boxes'" class="field has-addons groupBoxes">
 				<p v-for="mg in mealGroups"
 									:key="mg.id" 
 									class="control">
@@ -24,10 +24,14 @@
 									v-on:click.prevent="onSelection(mg.id)"
 									:class="selMealGroup == mg.id ? 'is-primary' : ''"
 									>{{ mg.name }}<br>
-									<small>{{ meals.reduce((pre, cur) => (cur.group === mg.id) ? ++pre : pre, 0) }} meals</small>
+									<small>{{ meals.reduce((pre, cur) => (cur.groupId === mg.id) ? ++pre : pre, 0) }} {{numberOfMealsText}}</small>
 					</button>
 				</p>
 			</div> 
+			<button class="button smallBtn" @click.prevent="displayChanged">
+				<span v-if="__displayAs=='boxes'">Droplist</span>
+				<span v-else>Boxes</span>
+			</button>
 		</div>
   </div>
 </template>
@@ -38,7 +42,8 @@ export default {
   props: {
 		mealGroups: Array,
 		selMealGroup: Number,
-		meals: Array
+		meals: Array,
+		numberOfMealsText: String
   },
   methods: {
     onSelection (event) {

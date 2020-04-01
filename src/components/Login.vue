@@ -1,165 +1,209 @@
 <template>
-	<div>
-		<div class="container is-fluid">
-			<section class="section">
-        <div class="columns is-centered">
-          <div class="column is-5 is-3-desktop">
+    <div>      
+      <section class="section">
+        <div class="container has-text-centered">
+						{{ t }}
+          <h2 class="title">{{ t.login_title }}</h2>
 
-				    <h1>Login</h1>
+          <div class="columns is-centered">
+            <div class="column is-5 is-3-desktop">              
+              <form>
+                <!-- error 
+                <div v-if="error" class="alert alert-danger">{{error}}</div> -->
 
-				    <!-- error messages -->
-            <article v-show="typeof errors !== 'undefined' && errors.length > 0"
-                class="message is-danger">
-              <div class="message-header">Please check</div>
-              <ul class="message-body errors">
-                  <li v-for="(err, index) in errors" :key="index">{{ err }}</li>
-              </ul>
-            </article>
+                <!-- error msg  
+                <div v-show="errorMsg" class="field">
+                  <div class="control">
+                      <div class="notification is-danger">
+                        {{errorMsg}}
+                      </div>
+                  </div>
+                </div> -->
 
-            <!-- email -->  
-            <div class="field">
-              <div class="control">
-                <label for="email">Email</label>
-                <input id="email"
-                      type="email"
+                <!-- email -->  
+                <div class="field">
+                  <div class="control">
+                    <label for="email">{{ t.email }}</label>
+                    <input id="email"
+                    type="email"
+                    class="input" 
+                    name="email"
+                    value="test@test.com"
+                    required
+                    autofocus
+                    :placeholder=t.email
+                    v-model="lUser.email"
+                  />
+                  </div>
+                </div>
+                
+                <!-- password -->  
+                <div class="field">
+                  <p class="control has-addons">
+                    <label for="password">{{ t.pw }}</label>
+                    <input id="password"
+                      type="password"
                       class="input"
-                      name="email"
-                      v-model="user.email"
-				  	          :class="charsLeft(50, user.email)[0] ? 'exceedTextLength' : ''"
-                />
-				        <span class="is-right">												
-				        	<span class="textLimiter is-pulled-right is-size-7" 
-				        			:class="charsLeft(50, user.email)[0] ? 'has-text-danger' 
-				        			: ''">{{ charsLeft(50, user.email)[1] }}
-				        	</span> 
-				        </span>
-              </div>
-            </div>            
-  
-            <!-- password -->  
-              <p class="control has-addons">
-                <label for="password">Password</label>
-                <input id="password"
-                        type="password"
-                        class="input"
-                        placeholder="Password"
-                        v-model="user.password"
-				  	            :class="charsLeft(50, user.password)[0] ? 'exceedTextLength' : ''"
-				        />
-				        <span class="is-right">												
-				        	<span class="textLimiter is-pulled-right is-size-7" 
-				        			:class="charsLeft(50, user.password)[0] ? 'has-text-danger' 
-				        			: ''">{{ charsLeft(50, user.password)[1] }}
-				        	</span> 
-				        </span>                
-              </p>
-              <button @click.prevent="passwordHelper ? passwordHelper = false : passwordHelper = true"
-                  class="button moreInfo">
-                <span class="icon is-primary">
-                  <i class="fas fa-info-circle"></i>
-                </span>
-              </button>
+                       :placeholder= t.pw
+                      v-model="lUser.password"
+                    />
+                  </p>
+                  <button @click.prevent="passwordHelper ? passwordHelper = false : passwordHelper = true" 
+                      class="button moreInfo">
+                    <span class="icon is-primary">
+                      <i class="fas fa-info-circle"></i>
+                    </span>
+                  </button>
+                </div>
+                <div v-if="passwordHelper" class="notification is-link">
+                  <button class="delete" @click.prevent="passwordHelper = false"></button> 
+                  <ul>{{ t.login_pwRules }}:
+										<li>{{ t.pwRule1 }}</li>
+										<li>{{ t.pwRule2 }}</li>
+										<li>{{ t.pwRule3 }}</li>
+										<li>{{ t.pwRule4 }}</li>
+                  </ul>
+                </div>
 
-				      <!-- password help text -->
-              <div v-if="passwordHelper" class="notification is-link">
-                <button class="delete" @click.prevent="passwordHelper = false"></button> 
-                <ul>Password has at least:
-                  <li>One number</li>
-                  <li>One lowercase letter</li>
-                  <li>One uppercase letter</li>
-                  <li>Six characters long</li>
-                </ul>
-              </div>
+                <!-- remember user on this machine 
+                <div class="field">
+                  <div class="control">
+                    <label class="checkbox">
+                    <input v-model="lUser.remember" type="checkbox">
+                      Remember me
+                    </label>
+                  </div>
+                </div> --> 
 
-            <!-- remember  -->
-            <div class="field">
-              <div class="control">
-                <label class="checkbox">
-                <input v-model="remember" type="checkbox">
-                  Remember me on this device
-                </label>
-              </div>
+                <!-- login btn -->  
+                <div class="field">
+                  <div class="control">
+                    <button 
+                        class="button is-primary is-fullwidth"
+                        @click.prevent="login()">{{ t.login_title }}</button>
+                  </div>
+                </div>
+
+                <small>
+                  <router-link class="has-text-centered" to="/Register">{{ t.login_goToRegister }}</router-link>
+                </small>
+
+              </form>
+
             </div>
+          </div>
 
-            <!-- login btn -->  
-            <div class="field">
-              <div class="control">
-                <button type="submit"
-                  @click.prevent="login" 
-                  class="button is-primary is-fullwidth">Login</button>
-              </div>
-            </div>
-
-          </div>  
         </div>
-			</section>
-		</div>
-	</div>
+      </section>
+    </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex"
 export default {
-	name: 'Login',
-	data () {
-		return {
-      user: {
-        email: 'test2@test.com', //null,
-        password: '123qweQWE', //null
-      },
-      remember: false,
-			passwordHelper: false,
-      errors: []
-		}
-	},
-	methods: {
-		login: function() {
-      this.errors = [];
-      if(this.user.email == null)  { this.errors.push('Email'); }
-      if(!emailIsValid(this.user.email)) { this.errors.push('Email'); }
-      if(!passwordIsValid(this.user.password)) { this.errors.push('Password'); }
-      if(this.user.password == null) { this.errors.push('Password'); }
-      console.log('this.errors:', this.errors);
-      if(this.errors.length == 0) {
-        this.user.email = clean(this.user.email.trim());
-        this.user.password = clean(this.user.password.trim());
+  name: "login",
+        data() {
+            return {
+              lUser: {
+                email: '',
+                password: '',
+                remember: false
+              },
+              errorMsg: null,
+              passwordHelper: false
+            }
+        },
+        methods: {
+          login() {
+            console.log('Login this.errorMsg:', this.errorMsg);
+            console.log('Login this.lUser:', this.lUser);
+            this.lUser.email = this.lUser.email.trim();
+            this.lUser.password = this.lUser.password.trim();
+            if(emailIsValid(this.lUser.email)) {
+              if(passwordIsValid(this.lUser.password)) {
+								if(this.lUser.remember == true) { this.lUser.remember = '1'; }
+								let data = { "email": this.lUser.email, "password": this.lUser.password, "remember": this.lUser.remember ? '1' : '0' };
+                this.getUser(data);
+                console.log('Login this.user:', this.lUser);
+              } else {
+								//this.errorMsg = 'Please check password: It must have at least: one number, one lowercase and one uppercase letter and at least six characters';
+								this.errorMsg = this.t.pwErrMsg;								
+              }
+            } else {
+							//this.errorMsg = 'Please check email'; 
+							this.errorMsg = this.t.emailErrMsg;
+            }
+          },
+          ...mapActions(["getTranslations", "getUser"])
+        }, // end methods
+        watch: {
+          // after loginUser() code execution continues here
+          user: function() {
+            console.log('user watch - this.user:', this.user);
+            if (this.user === undefined || this.user.length == 0) { 
+							// this.errorMsg = 'User not found with this email and password';
+							this.errorMsg = t.login_noUserFound;
+            } else {
+              console.log('user found - this.user:', this.user);
+               // if user checked remember, getUser() returned encrypted userId (remember)
+               if (this.user.remember != '') {
+                // save in local storage
+                localStorage.setItem("remember", this.user.remember); 
+                console.log('saved to local storage');
+							}
+							// get users postal code
+              // this.$router.replace({name: 'Listing'});
+            }
+          },
+					// after getHouseData() code execution continues here
+					/*
+          house() {          
+            console.log('house watch - this.house:', this.house);
+            // if (this.house.length>0) {
+            if (this.house === undefined || this.house.length == 0) {
+              this.errorMsg = 'Oh no! - The Laundry room you are registered to could not be found, please contact your house management.';
+              console.log('no house found');
+            } else {
+            // house was found with registration code
+            console.log('house found');
+            this.isAdmin = false;
+            this.codeAccepted = true;
+            this.$router.replace({name: 'booking'});
+            } 
+					},
+					*/
 
-        /*            
-                  //this.apiCall('register', this.user); // register
-									//this.saveUser(this.user);
-				*/
-      }
-		},
-		...mapActions(["getUser"]),
-		// calculates number of characters left, returns array: [is limit exceeded, characters left / max]
-		charsLeft(maxLen, str) {
-			return [ str.length > maxLen ? true : false,
-			str.length>maxLen/2 ? maxLen - str.length + " / " + maxLen : ''];
-		},
-    // reset error message after 5 seconds
-    errorMsg:function() {
-      var self = this;
-      if(this.errorMsg != '') {
-        setTimeout(function() {
-            self.errorMsg = '';
-        }, 5000);
-      }
-    },
-		forwardToNextPage() {
-			// this.$router.replace({name: 'xxxxxxx'});
-		}
-	},
-	created: function () {
-		
-	},
-	watch: {
-		xxxxx: function() {
-
-		}
-	},
-	computed: mapGetters(["XXXuser"])
-}
+          // reset error message after 5 seconds
+          /*
+          errorMsg: function() {
+            var self = this;
+            if(this.errorMsg != '') {
+              setTimeout(function() {
+                  self.errorMsg = '';
+              }, 5000);
+            }
+          }
+          */
+        },               
+        created(){		
+  		  //this.changeLang('en');	
+    		this.getTranslations('fi');
+	
+          // try read userId from local storage
+          /*
+          let userId = localStorage.getItem("remember");
+          if(userId) {
+            console.log('Logging in using userId found in localStorage:', userId);
+            this.lUser.id = parseInt(userId);
+            this.loginUser(this.lUser); // if local storage string found - redirect to booking
+          }
+          */
+        },
+        computed: mapGetters(["t", "user"])      
+};
 </script>
 
 <style scoped>
+
+
 </style>

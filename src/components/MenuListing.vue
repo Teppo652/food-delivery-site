@@ -7,7 +7,7 @@
 												<span v-for="sm in meals" :value="sm.id" :key="sm.id"
 													@click.prevent="selMeal = sm"
 													>
-													<span v-if="sm.group == selMealGroup"
+													<span v-if="sm.groupId == selMealGroup"
 														class="menuRow" 
 														:class="selMeal == sm ? 'selected' : ''">
 														{{ sm.name }} 

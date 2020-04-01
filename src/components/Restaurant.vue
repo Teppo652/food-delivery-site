@@ -3,54 +3,76 @@
 
     <section class="section">
     <div class="container">
-        <!--
-          "id": "1", "listingImg": "listi1", "imgTagIds": "imgTagIds1", "deliveryTime": "10", "name": "Kotipizza", "avgStars": "5", "totVotes": "10", "priceLevel": "1", "foodTypeIds": "foodTypeIds1", "minPurchase": "10", "deliveryPrice": "3", "bonus": "1"
-        
+        <!--           "id": "1", "listingImg": "listi1", "imgTagIds": "imgTagIds1", "deliveryTime": "10", "name": "Kotipizza", "avgStars": "5", "totVotes": "10", "priceLevel": "1", "foodTypeIds": "foodTypeIds1", "minPurchase": "10", "deliveryPrice": "3", "bonus": "1"
 60 MIN
 img
 Armis Pizzeria  * 4.3/5 (587)
 €€€ kebab, burgers, falafel, pizza
 €12.00 minimum l  3.00 delivery fee
-5% bonus
+5% bonus -->
+        restaurant: {{ restaurant }}<br>
+        menu: {{ menu }}<br><br>
+        order: {{ order }}<br><br>        
+        order.items: {{ order.items }}<br><br><br><br>
+ 
+restaurant:<br><!--
+{{ restaurant.name }}<br> 
+{{ restaurant.address }}, 4530 London<br>
+Map: {{ restaurant.coordsXY }}<br>
+<br><br>
+reviews: {{ restaurant.totVotes }}<br>
+average: {{ restaurant.avgStars }}<br>
+
+
+<br>
+priceLevel: {{ restaurant.priceLevel }}<br>
+foodTypeIds: {{ restaurant.foodTypeIds }}<br>
+minPurchase: {{ restaurant.minPurchase }}<br>
+-->
+<br><br><br><br>
+        resId: {{ resId }}<br>
+        Router test: <br>*
         
-        -->
-        <ul class="cards">
-          
-            <li v-for="(r, index) in restaurants"  :key="index" class="cards__item">
-              <div class="card">                  
-                    <div class="card-image">
-                        <div class="image is-16by9">
-                        <!--<span class="deliveryTime">{{ r.deliveryTime }}<span class="mins">MIN</span></span>-->
-                        <span class="zoom">                        
-                          <img src="https://prod-wolt-venue-images-cdn.wolt.com/s/jZ5N1obl19oBk3aEYOYsr1TdeP5jIY-gQ0WjacEa_34/5dd7d3f415fdc0911cae29f2/455b3380dd1cdedcd4adf69158f1c079" alt="Placeholder image">
-                        </span>
-                        <span class="deliveryTime">{{ r.deliveryTime }}<span class="mins">MIN</span></span>
-                        </div>
-                    </div>
 
-                    <div class="columns listing">
-                        <span class="column listingItem isLeft card__title">{{ r.name }}</span>
-                        <span class="column listingItem isRight stars"><img src="../assets/star.svg" alt=""> <span class="avgStars">{{ r.avgStars }}</span>/5 ({{ r.totVotes }})</span> 
-                    </div>
-                    <!--<img v-bind:src="images[index]" class="card__image" />    -->
-                    <div class="card__content">  
-                      <!--
-                        {{ r.foodTypeIds.getFoodTypes() }}
-                        | formatId
 
-                        {{ r.foodTypeIds | getFoodTypes(r.foodTypeIds) }}
-                        -->                      
-                        <p class="card__row1"><span>{{ showPriceLevel(r.priceLevel) }}</span> {{ getFoodTypes(r.foodTypeIds) }}</p>
-                        <p class="card__row2">  <span class="dark">€{{ r.minPurchase }}</span> minimum <span class="pipe">|</span>  
-                          <span v-if="!r.deliveryPrice"><span class="dark">Free</span> delivery</span>
-                          <span v-else><span class="dark">€{{ r.deliveryPrice }}</span> delivery fee</span>
-                        </p>
-                        <p v-if="r.bonus" class="card__row3">{{ r.bonus }}% bonus</p>                        
-                    </div>
-                    <a class="divLink" :href="index">Link</a>
-              </div>
-            </li>
-        </ul>
+
+        <br><br><br><br>
+        Meals:<br>
+        <div v-for="(m, index) in menu" :key="index" >
+          <div @click.prevent="addMeal(m)">{{ m.name }} (ID:{{m.id}}) ${{ m.price }} <span>Add</span></div>
+        </div>
+        <br><br><br>
+        <span v-if="order.items">
+        Your order:<br>
+        Order Summary:
+        {{ order.items.length }} items<br>
+        <div v-for="i in  order.items" :key="i.id" >
+          <br>
+          <span @click.prevent="decreaseOrderAmount(i)">-</span>&nbsp;
+          {{i.amount}}&nbsp;
+          <span @click.prevent="increaseOrderAmount(i)">+</span>&nbsp;&nbsp;
+          {{i.name}} (ID:{{i.mealId}}) ${{i.price}}
+        </div>
+        <br>Subtotal ${{order.subTotalPrice}}
+        <br>Delivery fee ${{order.deliveryPrice}}
+        <br>TOTAL ${{order.totalPrice}}
+        </span>
+        
+        <!-- continue -->
+        <div class="column is-4">
+					  <button type="submit" @click.prevent="placeOrder"
+              :disabled="order.totalPrice==0"
+						  class="button is-primary is-fullwidth">
+					    <span>Order</span>
+					    <span class="icon"><i class="fas fa-check-circle"></i></span>
+					  </button>
+				</div>
+
+        <!--
+          10<br>
+          SELECT id,restaurantId,groupId,name,descText,ingredients,price,variationIds,orderId FROM meals WHERE restaurantId = 10
+          [{"id":"129","restaurantId":"10","groupId":"52","name":"C","descText":"","ingredients":"","price":"12","variationIds":null,"orderId":"0"},{"id":"127","restaurantId":"10","groupId":"52","name":"A","descText":"","ingredients":"","price":"12","variationIds":null,"orderId":"0"},{"id":"128","restaurantId":"10","groupId":"52","name":"B","descText":"","ingredients":"","price":"12","variationIds":null,"orderId":"0"}]
+          -->
 
     </div>
     </section>
@@ -62,13 +84,44 @@ import { mapGetters, mapActions } from "vuex"
 export default {
   name: 'Restaurant',
   data () {
-    return {       
-      restaurant: [],
+    return {
+			resId:this.$route.params.Pid,   
+      //restaurant: [],
     }  
   },
   methods: {
-		...mapActions(["getRestaurant"]), 
-    showPriceLevel: function(num) { 
+    ...mapActions(["getRestaurant", "getMenu", "initOrder", "getOrder", "updateOrder", "decreaseOrderAmount", "increaseOrderAmount", "syncUser"]), 
+    placeOrder() {
+      alert('ordering');
+      //console.log('Restaurant.vue R96 user:', this.user.email);
+       this.$router.replace({name: 'Login'});
+      
+    },
+    addMeal(selMeal) {
+     /* let newItem = {
+        "mealId": selMeal.id,
+        "amount": 1, 
+        "name": selMeal.name,
+        "price": selMeal.price,
+        "variationId": null
+      }; */
+      this.updateOrder({
+        /*"orderItemId": null, */
+        "mealId": selMeal.id,
+        "amount": 1, 
+        "name": selMeal.name,
+        "price": selMeal.price,
+        "variationId": null
+      });
+    },
+    XXXXXXXXXXXXchangeAmount(obj, change) {
+      if(change === 'd') {
+        this.increaseOrderAmount(obj);
+      } else {
+        this.decreaseOrderAmount(obj);
+      }
+    },
+    XXXXXXXXXshowPriceLevel: function(num) { 
       let i = 0;
       let res = '';
       for(i; i<num; i++) {
@@ -82,12 +135,20 @@ export default {
     
   },
   created() {
-     this.getRestaurant();
+     this.getRestaurant(10);
+     this.initOrder();
+     //this.getOrder();
   },
-	computed: mapGetters(["restaurant"])
+	watch: {		
+		restaurant: function() {
+			console.log('watch restaurant id:', this.restaurant.id);
+			this.getMenu(this.restaurant.id);
+    }
+  },
+	computed: mapGetters(["restaurant", "menu", "order", "user"])
 }
 </script>
 
-<style lang="less" scoped>
+<style scoped>
 
 </style>
